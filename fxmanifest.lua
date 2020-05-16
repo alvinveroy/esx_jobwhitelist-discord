@@ -5,6 +5,7 @@ game 'gta5'
 description 'ESX Whitelisted Jobs Discord Roles'
 
 server_scripts {
+	'config.lua',
 	'server/main.lua'
 }
 

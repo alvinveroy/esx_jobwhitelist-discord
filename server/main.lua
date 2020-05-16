@@ -24,6 +24,7 @@ function checkRoles(user)
 			print("Encontrado discord id: "..discordId)
 			break
         end
+    end
 
     if discordId then
 	    local endpoint = ("guilds/%s/members/%s"):format(Config.GuildId, discordId)
@@ -94,4 +95,14 @@ AddEventHandler('esx_jobwhitelist-discord:assignRoles', function()
         end
     end
 
+end)
+
+Citizen.CreateThread(function()
+	local guild = discordRequest("GET", "guilds/"..Config.GuildId, {})
+	if guild.code == 200 then
+		local data = json.decode(guild.data)
+		print("Permission system guild set for: "..data.name.." ("..data.id..")")
+	else
+		print("An error has occurred, check your configuration and verify that everything is correct. Error: "..(guild.data or guild.code)) 
+	end
 end)
