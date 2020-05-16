@@ -10,7 +10,10 @@ end)
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
-  PlayerData = xPlayer   
+  PlayerData = xPlayer
+  if xPlayer ~= nil then
+	TriggerServerEvent('esx_jobwhitelist-discord:assignRoles')
+  end   
 end)
 
 RegisterNetEvent('esx:setJob')

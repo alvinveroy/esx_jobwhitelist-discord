@@ -21,7 +21,7 @@ function checkRoles(user)
 	for _, id in ipairs(GetPlayerIdentifiers(user)) do
 		if string.match(id, "discord:") then
 			discordId = string.gsub(id, "discord:", "")
-			print("Encontrado discord id: "..discordId)
+			print("Checking  roles of the discord ID: "..discordId)
 			break
         end
     end
@@ -44,16 +44,16 @@ function checkRoles(user)
 	end
 end
 
-function checkJob(name, grade, label)
+function checkJob(name, grade)
     local whitelistedJobs = Config.whitelistedjobs
     local listedRoles = Config.Roles
 
     for _, v in ipairs(whitelistedJobs) do
-        if v == label then
+        if v == name then
             --[[ check job name and grade ]]
             for index, value in pairs(listedRoles) do
                 if value.job == name and value.grade == grade then
-                    return value.id
+                    return index
                 end
             end
         end
@@ -81,20 +81,23 @@ AddEventHandler('esx_jobwhitelist-discord:assignRoles', function()
     local designation = nil
     local targetJob = nil
     local doSetJob = nil
-    targetJob = checkJob(xPlayer.job.name, xPlayer.job.grade, xPlayer.job.label)
-    designation = checkRoles(source)
-    doSetJob = assignment(designation)
 
-    if doSetJob ~= nil then
-        if listedRoles[doSetJob].job ~= xPlayer.job.name and listedRoles[doSetJob].grade ~= xPlayer.job.grade then
-            xPlayer.setJob(listedRoles[doSetJob].job, listedRoles[doSetJob].grade)
-        end
-    else
-        if targetJob ~= nil then
-            xPlayer.setJob("unemployed", 0)
+    if xPlayer ~= nil then
+        targetJob = checkJob(xPlayer.job.name, xPlayer.job.grade)
+        designation = checkRoles(source)
+        doSetJob = assignment(designation)
+
+        if doSetJob ~= nil then
+            if listedRoles[doSetJob].job ~= xPlayer.job.name and listedRoles[doSetJob].grade ~= xPlayer.job.grade then
+                xPlayer.setJob(listedRoles[doSetJob].job, listedRoles[doSetJob].grade)
+            end
+        else
+            if targetJob ~= nil then
+                xPlayer.setJob("unemployed", 0)
+            end
         end
     end
-
+    
 end)
 
 Citizen.CreateThread(function()
