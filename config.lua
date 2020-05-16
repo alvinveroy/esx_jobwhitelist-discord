@@ -1,6 +1,6 @@
 Config = {
-	DiscordToken = 'Bot Discord Token aqui',
-	GuildId = 'ID da Guilda Aqui',
+	DiscordToken = 'Bot Discord Token',
+	GuildId = 'discord Guild/server id',
     whitelistedjobs = { 'ambulance', 'pilot', 'mechanic', 'police', 'cardealer' },
 	Roles = {
         EMS1 = { id = '711165291069177886', job = 'ambulance', grade = 0 },
