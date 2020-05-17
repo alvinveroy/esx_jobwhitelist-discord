@@ -16,15 +16,7 @@ function discordRequest(method, endpoint, jsondata)
     return data
 end
 
-function checkRoles(user)
-	local discordId = nil
-	for _, id in ipairs(GetPlayerIdentifiers(user)) do
-		if string.match(id, "discord:") then
-			discordId = string.gsub(id, "discord:", "")
-			print("Checking  roles of the discord ID: "..discordId)
-			break
-        end
-    end
+function checkRoles(user, discordId)
 
     if discordId then
 	    local endpoint = ("guilds/%s/members/%s"):format(Config.GuildId, discordId)
@@ -84,20 +76,32 @@ AddEventHandler('esx_jobwhitelist-discord:assignRoles', function()
 
     if xPlayer ~= nil then
         targetJob = checkJob(xPlayer.job.name, xPlayer.job.grade)
-        designation = checkRoles(source)
-        doSetJob = assignment(designation)
-
-        if doSetJob ~= nil then
-            if listedRoles[doSetJob].job ~= xPlayer.job.name and listedRoles[doSetJob].grade ~= xPlayer.job.grade then
-                xPlayer.setJob(listedRoles[doSetJob].job, listedRoles[doSetJob].grade)
+        
+        local discordId = nil
+        for _, id in ipairs(GetPlayerIdentifiers(user)) do
+            if string.match(id, "discord:") then
+                discordId = string.gsub(id, "discord:", "")
+			    print("Checking  roles of the discord ID: "..discordId)
+			    break
             end
-        else
-            if targetJob ~= nil then
-                xPlayer.setJob("unemployed", 0)
+        end
+
+        if discordId then
+            designation = checkRoles(source)
+            doSetJob = assignment(designation)
+
+            if doSetJob ~= nil then
+                if listedRoles[doSetJob].job ~= xPlayer.job.name and listedRoles[doSetJob].grade ~= xPlayer.job.grade then
+                    xPlayer.setJob(listedRoles[doSetJob].job, listedRoles[doSetJob].grade)
+                end
+            else
+                if targetJob ~= nil then
+                    xPlayer.setJob("unemployed", 0)
+                end
             end
         end
     end
-    
+
 end)
 
 Citizen.CreateThread(function()
